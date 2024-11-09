@@ -21,7 +21,7 @@ fun MainNavHost(
         startDestination = MainRoute.Home
     ) {
         composable<MainRoute.Home> {
-            HomeScreen()
+            HomeScreen(navigateToEdit = {navController.navigate(MainRoute.Edition)})
         }
 
         composable<MainRoute.Edition> {

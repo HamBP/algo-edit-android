@@ -13,7 +13,9 @@ import androidx.compose.ui.unit.dp
 import me.algosketch.algoedit.design.theme.MyApplicationTheme
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navigateToEdit: () -> Unit,
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -21,7 +23,7 @@ fun HomeScreen() {
         item {
             Button(
                 modifier = Modifier.padding(top = 40.dp),
-                onClick = {},
+                onClick = navigateToEdit,
             ) {
                 Text("+ 새 프로젝트")
             }
@@ -37,6 +39,6 @@ fun HomeScreen() {
 @Composable
 fun HomeScreenPreview() {
     MyApplicationTheme {
-        HomeScreen()
+        HomeScreen({})
     }
 }
