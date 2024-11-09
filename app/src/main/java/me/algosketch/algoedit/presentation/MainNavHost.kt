@@ -8,7 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import me.algosketch.algoedit.presentation.route.MainRoute
-import me.algosketch.algoedit.presentation.screen.HomeScreen
+import me.algosketch.algoedit.presentation.screen.edition.EditionScreen
+import me.algosketch.algoedit.presentation.screen.home.HomeScreen
 
 @Composable
 fun MainNavHost(
@@ -21,6 +22,10 @@ fun MainNavHost(
     ) {
         composable<MainRoute.Home> {
             HomeScreen()
+        }
+
+        composable<MainRoute.Edition> {
+            EditionScreen()
         }
     }
 }

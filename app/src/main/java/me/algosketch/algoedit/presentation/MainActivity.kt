@@ -20,11 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.arthenica.ffmpegkit.FFmpegKit
-import me.algosketch.algoedit.ui.theme.MyApplicationTheme
+import dagger.hilt.android.AndroidEntryPoint
+import me.algosketch.algoedit.design.theme.MyApplicationTheme
 import java.io.File
 import java.io.FileInputStream
 import java.io.OutputStream
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

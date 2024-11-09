@@ -12,10 +12,12 @@ lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
 composeBom = "2024.04.01"
 navigationCompose = "2.8.3"
+hiltNavigationCompose = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 ffmpeg-kit-full = { module = "com.arthenica:ffmpeg-kit-full", version.ref = "ffmpegKitFull" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }

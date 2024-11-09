@@ -1,4 +1,4 @@
-package me.algosketch.algoedit.presentation.screen
+package me.algosketch.algoedit.presentation.screen.home
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import me.algosketch.algoedit.ui.theme.MyApplicationTheme
+import me.algosketch.algoedit.design.theme.MyApplicationTheme
 
 @Composable
 fun HomeScreen() {
