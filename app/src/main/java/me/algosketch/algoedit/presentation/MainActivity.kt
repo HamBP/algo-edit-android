@@ -1,4 +1,4 @@
-package me.algosketch.algoedit
+package me.algosketch.algoedit.presentation
 
 import android.content.ContentValues
 import android.content.Context
@@ -31,12 +31,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SimpleButton(
-                        name = "영상 불러오고 0~10초까지 잘라서 저장하기",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                MainNavHost()
             }
         }
     }
