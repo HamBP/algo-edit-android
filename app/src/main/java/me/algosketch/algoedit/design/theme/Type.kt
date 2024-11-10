@@ -1,4 +1,4 @@
-package me.algosketch.algoedit.ui.theme
+package me.algosketch.algoedit.design.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
