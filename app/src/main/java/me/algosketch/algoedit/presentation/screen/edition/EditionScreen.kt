@@ -6,24 +6,32 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -34,10 +42,16 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.OutputStream
 
+// todo : ViewModel을 사용하기 시작하면 Preview 출력을 위해 분리될 컴포넌트
+//@Composable
+//fun EditionScreen(
+//    viewModel: EditionViewModel = hiltViewModel()
+//) {
+//    EditionScreen()
+//}
+
 @Composable
-fun EditionScreen(
-    viewModel: EditionViewModel = hiltViewModel()
-) {
+fun EditionScreen() {
     val context = LocalContext.current
     var uri: Uri? by remember { mutableStateOf(null) }
     val exoPlayer = remember(uri) {
@@ -51,9 +65,16 @@ fun EditionScreen(
         }
     }
 
-    Column {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         TmpAppBar("Project(1)")
-        Box(modifier = Modifier.size(300.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(360.dp),
+            contentAlignment = Alignment.Center,
+        ) {
             if (uri == null) {
                 AddVideoButton({ uri = it })
             } else {
@@ -65,6 +86,43 @@ fun EditionScreen(
                         }
                     },
                 )
+            }
+        }
+        Row(
+            modifier = Modifier.height(40.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("00:00.0")
+            Text("00:00.0")
+        }
+        Row(
+            modifier = Modifier
+                .height(52.dp)
+                .fillMaxWidth(),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(52.dp)
+                    .background(color = Color.Gray)
+            ) { }
+
+        }
+        Spacer(
+            modifier = Modifier.weight(1f)
+        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            TextButton(
+                onClick = {}
+            ) {
+                Text("분할")
+            }
+            TextButton(
+                onClick = {}
+            ) {
+                Text("삭제")
             }
         }
     }
