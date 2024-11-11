@@ -2,10 +2,13 @@ package me.algosketch.algoedit.presentation.screen.edition
 
 import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,6 +70,7 @@ fun EditionScreen() {
             }
         }
     }
+    var thumbnailBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,7 +83,7 @@ fun EditionScreen() {
             contentAlignment = Alignment.Center,
         ) {
             if (uri == null) {
-                AddVideoButton({ uri = it })
+                AddVideoButton({ uri = it }, { thumbnailBitmap = it })
             } else {
                 AndroidView(
                     modifier = Modifier.fillMaxSize(),
@@ -106,7 +113,14 @@ fun EditionScreen() {
                     .size(52.dp)
                     .background(color = Color.Gray)
             ) { }
-
+            thumbnailBitmap?.let {
+                Image(
+                    modifier = Modifier.weight(1f),
+                    contentDescription = null,
+                    bitmap = it.asImageBitmap(),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
         }
         Spacer(
             modifier = Modifier.weight(1f)
@@ -131,6 +145,7 @@ fun EditionScreen() {
 @Composable
 fun AddVideoButton(
     onAddVideo: (uri: Uri) -> Unit,
+    setBitmap: (bitmap: Bitmap) -> Unit,
 ) {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
@@ -138,12 +153,10 @@ fun AddVideoButton(
     ) { uri: Uri? ->
         uri?.let {
             println("비디오 선택 ${uri}")
-            val filePath = getFilePathFromUri(context, uri)
-            if (filePath != null) {
+            getFilePathFromUri(context, uri)?.let { filePath ->
                 onAddVideo(uri)
-            } else {
-                println("111")
-            }
+                getVideoThumbnail(filePath)?.let(setBitmap)
+            } ?: run { println("111") }
         }
     }
 
@@ -152,33 +165,6 @@ fun AddVideoButton(
     ) {
         Text(
             text = "동영상 추가"
-        )
-    }
-}
-
-@Composable
-fun SimpleButton(name: String, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            println("비디오 선택 ${uri}")
-            val filePath = getFilePathFromUri(context, uri)
-            if (filePath != null) {
-                runFfmpegCommand(context, filePath)
-            } else {
-                println("111")
-            }
-        }
-    }
-
-    Button(
-        onClick = { launcher.launch("video/*") }
-    ) {
-        Text(
-            text = name,
-            modifier = modifier
         )
     }
 }
@@ -236,6 +222,19 @@ fun saveVideoToGallery(
                 input.copyTo(output)
             }
         }
+    }
+}
+
+fun getVideoThumbnail(videoPath: String): Bitmap? {
+    val retriever = MediaMetadataRetriever()
+    return try {
+        retriever.setDataSource(videoPath)
+        retriever.getFrameAtTime(0)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    } finally {
+        retriever.release()
     }
 }
 
