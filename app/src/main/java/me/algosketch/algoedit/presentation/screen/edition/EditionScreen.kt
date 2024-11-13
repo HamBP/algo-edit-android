@@ -8,7 +8,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,11 +30,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -71,6 +77,7 @@ fun EditionScreen() {
         }
     }
     var thumbnailBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val density = LocalDensity.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -100,8 +107,10 @@ fun EditionScreen() {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("00:00.0")
-            Text("00:00.0")
+            val duration = exoPlayer.duration
+            val durationSecs = exoPlayer.duration / 1000
+            Text("00:00.0") // todo 이벤트 리스너 등록을 통해 업데이트
+            Text("${durationSecs / 60}:${duration % 60}.${duration / 100}")
         }
         Row(
             modifier = Modifier
@@ -113,12 +122,20 @@ fun EditionScreen() {
                     .size(52.dp)
                     .background(color = Color.Gray)
             ) { }
-            thumbnailBitmap?.let {
-                Image(
-                    modifier = Modifier.weight(1f),
-                    contentDescription = null,
-                    bitmap = it.asImageBitmap(),
-                    contentScale = ContentScale.FillBounds
+            thumbnailBitmap?.let { bitmap ->
+                val resizedBitmap = remember(bitmap) { resizeBitmap(bitmap, 52.dp, density.density) }
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .height(52.dp)
+                        .background(
+                            brush = ShaderBrush(
+                                ImageShader(
+                                    resizedBitmap.asImageBitmap(),
+                                    TileMode.Repeated,
+                                    TileMode.Clamp
+                                )
+                            )
+                        )
                 )
             }
         }
@@ -167,6 +184,14 @@ fun AddVideoButton(
             text = "동영상 추가"
         )
     }
+}
+
+fun resizeBitmap(bitmap: Bitmap, targetHeight: Dp, density: Float): Bitmap {
+    val targetHeightPx = targetHeight.value * density
+    val aspectRatio = bitmap.width.toFloat() / bitmap.height
+    val targetWidthPx = (targetHeightPx * aspectRatio).toInt()
+
+    return Bitmap.createScaledBitmap(bitmap, targetWidthPx, targetHeightPx.toInt(), true)
 }
 
 fun getFilePathFromUri(context: Context, uri: Uri): String? {
