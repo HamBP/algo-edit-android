@@ -13,10 +13,11 @@ import me.algosketch.algoedit.presentation.screen.home.HomeScreen
 
 @Composable
 fun MainNavHost(
+    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         navController = navController,
         startDestination = MainRoute.Home
     ) {
